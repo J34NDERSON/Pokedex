@@ -1,11 +1,11 @@
 import { useQueryPokemonPage } from "../../hooks/useQueryPokemonPages";
 import { Container } from "./style";
 
-export function App() {
+export function Home() {
   const { data } = useQueryPokemonPage();
   return (
     <Container>
-      <h1>App</h1>
+      <h1>Home</h1>
       <p>{data}</p>
     </Container>
   );
