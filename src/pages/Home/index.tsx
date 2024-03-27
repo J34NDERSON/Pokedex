@@ -1,21 +1,34 @@
+import { PokemonCard } from "../../components/PokemonCard";
 import { Link } from "react-router-dom";
-import { useQueryPokemonPage } from "../../hooks/useQueryPokemonPages";
+import { useQueryPokemonPage } from "../../hooks/useQueryPokemonPage";
 import { Container } from "./style";
-import { PokemonCard } from "../../components/pokemonCards";
 
 export function Home() {
-  const { data, isLoading, error, page, totalPages } = useQueryPokemonPage();
-  console.log(data);
+  const { data, isLoading, error, prevPage, nextPage, page, totalPages } =
+    useQueryPokemonPage();
+
+  if (error) console.error(error);
+
+  function handleNextPage() {
+    // window.scrollTo({ top: 0 });
+    nextPage();
+  }
+
+  function handlePrevPage() {
+    // window.scrollTo({ top: 0 });
+    prevPage();
+  }
+
   return (
     <Container>
-      <h1>{"Bem vindo(a) à pokédex do reprograma jucás"}</h1>
-      {isLoading && <samp className="loading">Loading...</samp>}
-      {isLoading && error && <samp className="loading">Error...</samp>}
+      <h1>{"Bem-vindo(a) à Pokédex do Reprograma Jucás"}</h1>
+      {isLoading && <span className="loading">Loading...</span>}
+      {!isLoading && error && <span className="loading">Error...</span>}
 
       <div className="gridCards">
         {data?.map((pokemon) => {
           return (
-            <Link to={"/details"} key={pokemon.id}>
+            <Link to={`/details/${pokemon.name}`} key={pokemon.id}>
               <PokemonCard pokemon={pokemon} />
             </Link>
           );
@@ -23,11 +36,18 @@ export function Home() {
       </div>
 
       <div className="paginationComponent">
-        <button>&alt; Anterior</button>
+        <button onClick={handlePrevPage} disabled={page <= 1}>
+          &lt; Anterior
+        </button>
+
         <span className="numberPage">
-          {page}/{totalPages}
+          {String(page).padStart(2, "0")} /{" "}
+          {String(totalPages || "...").padStart(2, "0")}
         </span>
-        <button>Próxima &get;</button>
+
+        <button onClick={handleNextPage} disabled={page >= totalPages}>
+          Próxima &gt;
+        </button>
       </div>
     </Container>
   );
